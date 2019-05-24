@@ -1,0 +1,49 @@
+apply plugin: 'application'
+apply plugin: 'java'
+
+group = 'com.yzw'
+version = '1'
+
+description = """文件复制-SWT"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+mainClassName = 'core.CopyFile'
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+
+def libPath = 'libs'
+
+repositories {
+	maven{ url "http://central.maven.org/maven2/" }
+    maven{ url 'https://maven.aliyun.com/repository/central'}
+}
+
+
+dependencies {
+	implementation fileTree(dir:libPath,include:['*.jar'])
+    testImplementation 'junit:junit:3.8.1'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java' // 指定源码目录
+        }
+        resources {
+            srcDir 'src/main/resources' //资源目录
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes ('Main-Class': 'core.CopyFile',"Implementation-Title": project.name)
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
